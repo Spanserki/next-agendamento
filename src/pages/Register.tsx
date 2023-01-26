@@ -23,7 +23,7 @@ const claimUsernameFormSchema = z.object({
         .min(3, { message: 'Mínimo 3 caracteres' })
         .regex(/^([a-z\\-]+)$/i, { message: 'Apenas letras e hifens ' })
         .transform(ussername => ussername.toLowerCase()),
-    completeName: z.string()
+    name: z.string()
         .min(3, { message: 'Mínimo 3 caracteres' })
         .regex(/^([a-z\\-]+)$/i, { message: 'Apenas letras e hifens ' })
         .transform(ussername => ussername.toLowerCase())
@@ -54,7 +54,7 @@ export default function Register() {
         try {
             await api.post('/users', {
                 username: data.username,
-                completeName: data.completeName
+                name: data.name
             })
             
             await router.push('/ConnectGoogle')
@@ -158,7 +158,7 @@ export default function Register() {
                         bgColor='black'
                         focusBorderColor="green.700"
 
-                        {...register('completeName')}
+                        {...register('name')}
                     />
 
                     <Text
@@ -166,7 +166,7 @@ export default function Register() {
                         fontSize={14}
                         color='red.500'
                     >
-                        {errors.completeName?.message}
+                        {errors.name?.message}
                     </Text>
                 </Flex>
 

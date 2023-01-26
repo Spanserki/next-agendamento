@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(405).end()
     }
 
-    const {username, completeName} = req.body
+    const {username, name} = req.body
 
     const userExists = await prisma.user.findUnique({
         where: {
@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const user = await prisma.user.create({
         data: {
-            completeName: completeName,
+            name: name,
             username: username,
         }
     })
