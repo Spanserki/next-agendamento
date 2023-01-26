@@ -11,9 +11,9 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  username String @unique
-  name     String
+  id           String @id @default(uuid())
+  username     String @unique
+  completeName String
 
   created_at DateTime @default(now())
 

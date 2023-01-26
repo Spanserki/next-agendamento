@@ -5,7 +5,8 @@ import {
     Heading, Icon, Input,
     InputGroup,
     InputLeftAddon,
-    Text
+    Text,
+    useToast
 } from "@chakra-ui/react";
 import { ArrowRight } from "phosphor-react";
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,6 +15,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { api } from "./api/axios";
+import { AxiosError } from 'axios'
 
 const claimUsernameFormSchema = z.object({
     username: z.string()
@@ -30,7 +33,12 @@ type ClaimUsernameFormData = z.infer<typeof claimUsernameFormSchema>
 
 export default function Register() {
 
-    const { register, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm<ClaimUsernameFormData>({
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        formState: { errors, isSubmitting }
+    } = useForm<ClaimUsernameFormData>({
         resolver: zodResolver(claimUsernameFormSchema)
     })
 
@@ -43,8 +51,29 @@ export default function Register() {
     }, [router.query?.username, setValue])
 
     async function handlePreRegister(data: ClaimUsernameFormData) {
-        console.log(data)
+        try {
+            await api.post('/users', {
+                username: data.username,
+                completeName: data.completeName
+            })
+            
+            await router.push('/ConnectGoogle')
+
+        } catch (error) {
+            if (error instanceof AxiosError && error.response?.data.message) {
+                toast({
+                    title: 'Ops!',
+                    description: "Usuário ja cadastrado",
+                    status: 'error',
+                    duration: 9000,
+                    isClosable: true,
+
+                })
+            }
+        }
     }
+
+    const toast = useToast()
 
     return (
         <Flex
